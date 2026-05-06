@@ -1,0 +1,79 @@
+company_name,ticker,exchange,notes
+LVMH,LVMUY,OTC,LVMH US OTC ADR — use LVMUY not the ambiguous LVMH string
+TSMC,TSM,NYSE,TSMC US-listed ADR
+BMW,BMWYY,OTC,BMW US OTC ADR — BMW matched wrong exchange on yfinance
+RR,RYCEY,OTC,Rolls-Royce US OTC ADR
+RYCEY,RYCEY,OTC,Rolls-Royce US OTC ADR
+VW,VWAGY,OTC,Volkswagen US OTC ADR
+FORD,F,NYSE,Ford Motor Company — FORD is not the ticker, F is
+CSU,CNSWF,OTC,Constellation Software US OTC — CSU.TO is the TSX listing
+LTSA,,,false_positive — no such liquid ticker; likely a text fragment
+ADESA,,,false_positive — delisted in 2022 after Carvana acquisition
+U.S,,,false_positive — geographic reference not a ticker
+COVID,,,false_positive — not a stock
+ARPU,,,false_positive — Average Revenue Per User metric
+EMEA,,,false_positive — geographic region
+FHFA,,,false_positive — US regulatory body
+BERT,,,false_positive — AI model name
+EPYC,,,false_positive — AMD chip brand name
+FAANG,,,false_positive — index basket term
+FDCA,,,false_positive — not a known ticker
+GAAP,,,false_positive — accounting standard
+NPS,,,false_positive — Net Promoter Score metric
+P.S,,,false_positive — text abbreviation
+UCAN,,,false_positive — US-Canada region reference
+YOUR,,,false_positive — article text fragment
+EUV,,,false_positive — ASML technology (Extreme UV lithography) not a stock
+GLP,,,false_positive — GLP-1 drug class reference not a standalone ticker
+ATH,,,false_positive — All-Time High price term
+GPU,,,false_positive — Graphics Processing Unit chip type
+NA,,,false_positive — Not Applicable or North America abbreviation
+ADR,,,false_positive — American Depositary Receipt type not a stock
+APAC,,,false_positive — Asia-Pacific region
+AWS,,,false_positive — Amazon Web Services division not separately listed
+CNBC,,,false_positive — TV network
+CPU,,,false_positive — chip type
+DOJ,,,false_positive — US Department of Justice
+EST,,,false_positive — estimate or time zone abbreviation
+FX,,,false_positive — foreign exchange reference
+FY,,,false_positive — Fiscal Year abbreviation
+IC,,,false_positive — integrated circuit or general abbreviation
+NATO,,,false_positive — political alliance
+NTM,,,false_positive — Next Twelve Months valuation metric
+NYSE,,,false_positive — stock exchange name not a ticker
+OTC,,,false_positive — over-the-counter market type
+PC,,,false_positive — personal computer
+PDF,,,false_positive — file format
+QGV,,,false_positive — likely a metric or fund reference
+RAM,,,false_positive — memory type
+SBC,,,false_positive — Stock-Based Compensation metric
+SUV,,,false_positive — vehicle type
+SVP,,,false_positive — executive title
+TAG,,,false_positive — text fragment
+USD,,,false_positive — US Dollar currency
+USDC,,,false_positive — stablecoin not an equity
+UX,,,false_positive — User Experience term
+YTD,,,false_positive — Year To Date metric
+XPU,,,false_positive — chip architecture term
+ZT,,,false_positive — text fragment
+ARR,,,false_positive — Annual Recurring Revenue metric (not ARMOUR REIT in this context)
+ASP,,,false_positive — Average Selling Price metric
+HOLD,,,false_positive — the word hold in context not the ETF ticker
+TV,,,false_positive — television reference not Grupo Televisa in context
+BBBY,,,false_positive — mentioned as a historical zero in a past portfolio review not a current recommendation
+GME,,,false_positive — mentioned as a historical multibagger in a past portfolio review not a current recommendation
+THC,,,false_positive — mentioned as a historical multibagger in a past portfolio review not a current recommendation
+ATI,,,false_positive — mentioned as a historical multibagger in a past portfolio review not a current recommendation
+FOSL,,,false_positive — mentioned as a historical zero in a past portfolio review not a current recommendation
+CUDA,,,false_positive — NVIDIA CUDA software platform brand name not a stock
+MI,,,false_positive — AMD MI-series chip accelerator brand name not a stock
+EM,,,false_positive — Emerging Markets abbreviation not a ticker
+MIS,,,false_positive — Moody's Investors Service division name; MCO is the proper parent company ticker
+III,,,false_positive — Roman numeral suffix in a person name (Ernie Garcia III) not a stock
+ELC,,,false_positive — Estee Lauder Companies abbreviation; EL is the proper NYSE ticker already in portfolio
+DSP,,,false_positive — Demand-Side Platform advertising term not a stock
+MAX,,,false_positive — Boeing 737 MAX aircraft model name not a standalone ticker
+HP,,,false_positive — horsepower unit in a car description not Hewlett-Packard
+RS,,,false_positive — Porsche 911 GT3 RS car model suffix not Reliance Steel
+CRSP,,,false_positive — mentioned in context of an acquisition reference not a standalone buy recommendation
+LVMHF,LVMUY,OTC,duplicate ADR for LVMH — consolidate to canonical LVMUY

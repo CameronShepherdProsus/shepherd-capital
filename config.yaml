@@ -1,0 +1,64 @@
+# Shepherd Tracker — Configuration
+# -------------------------------------------------------
+# Fill in the source URLs before running the pipeline.
+# All other defaults are sensible and can be left as-is.
+
+sources:
+  substack_url: "https://shepherdcapital.substack.com/"
+  website_url: "https://www.shepherdcapital.com"
+  include_archived_substack: true
+  include_linked_pages: true
+  use_rss: true
+  use_sitemap: true
+
+scraping:
+  user_agent: "ShepherdCapitalTracker/1.0 (personal research tool; non-commercial)"
+  request_delay_seconds: 2.0
+  max_pages: 500
+  timeout_seconds: 30
+  max_retries: 3
+  retry_delay_seconds: 5.0
+  cache_raw_html: true
+
+extraction:
+  use_llm: false          # set true if OPENAI_API_KEY or ANTHROPIC_API_KEY in .env
+  llm_provider: "anthropic"  # "anthropic" or "openai"
+  min_confidence: "low"   # only store recommendations at or above this level
+  stale_months: 18        # months without positive mention before marking stale
+
+portfolio:
+  start_date: null        # null = use earliest recommendation date
+  initial_capital: 100000
+  currency: "USD"
+  weighting: "equal"      # equal | recency | confidence | frequency
+  rebalance_frequency: "monthly"  # monthly | quarterly | never
+  benchmarks:
+    - "SPY"
+    - "QQQ"
+    - "URTH"
+  include_types:
+    - "buy"
+    - "long"
+    - "add"
+    - "portfolio_holding"
+    - "watchlist"
+  exclude_types:
+    - "sell"
+    - "short"
+    - "avoid"
+    - "trim"
+    - "mention_only"
+  watchlist_min_confidence: "high"  # minimum confidence for watchlist inclusion
+
+prices:
+  provider: "yfinance"
+  cache_hours: 4          # refresh prices if cached data older than this
+  history_years: 5
+
+ticker_overrides_file: "data/processed/manual_ticker_overrides.csv"
+
+output:
+  exports_dir: "data/exports"
+  excel_filename: "shepherd_capital_fund_tracker.xlsx"
+  database_path: "data/shepherd_tracker.sqlite"
+  raw_html_dir: "data/raw_html"
