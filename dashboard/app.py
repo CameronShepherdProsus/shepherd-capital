@@ -29,7 +29,7 @@ from src.utils import get_config_value
 
 st.set_page_config(
     page_title="Shepherd Capital — Fund Tracker",
-    page_icon="📈",
+    page_icon=None,
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -37,31 +37,32 @@ st.set_page_config(
 init_db()
 
 # ---------------------------------------------------------------------------
-# S&P Global SPDJI theme — CSS injection + chart palette
+# Prosus theme — CSS injection + chart palette
 # ---------------------------------------------------------------------------
 
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 *, html, body, .stApp {
-    font-family: 'Source Sans 3', 'Helvetica Neue', Arial, sans-serif !important;
+    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif !important;
 }
-.stApp { background-color: #F5F7F9; }
+.stApp { background-color: #FFFFFF; }
 
 /* ── Sidebar ── */
 [data-testid="stSidebar"] {
-    background-color: #1B2D3E !important;
+    background-color: #163180 !important;
     border-right: none;
 }
-[data-testid="stSidebar"] * { color: #E8ECF0 !important; }
+[data-testid="stSidebar"] * { color: #E8EDF8 !important; }
 [data-testid="stSidebar"] h1 {
     color: #FFFFFF !important;
     font-size: 1.05rem !important;
+    font-weight: 600 !important;
     line-height: 1.45 !important;
     letter-spacing: 0.01em;
 }
-[data-testid="stSidebar"] p { color: #B0BEC5 !important; }
+[data-testid="stSidebar"] p { color: #A8B8D8 !important; }
 [data-testid="stSidebar"] [role="radiogroup"] label {
     border-radius: 0 4px 4px 0 !important;
     padding: 6px 10px !important;
@@ -69,200 +70,201 @@ st.markdown("""
     transition: background 0.15s;
 }
 [data-testid="stSidebar"] [role="radiogroup"] label:hover {
-    background-color: rgba(255,255,255,0.07) !important;
+    background-color: rgba(255,255,255,0.08) !important;
 }
 [data-testid="stSidebar"] [role="radio"][aria-checked="true"],
 [data-testid="stSidebar"] [aria-selected="true"] {
-    background-color: rgba(196, 18, 48, 0.18) !important;
-    border-left: 3px solid #C41230 !important;
+    background-color: rgba(255,255,255,0.12) !important;
+    border-left: 3px solid #FFFFFF !important;
 }
 [data-testid="stSidebar"] .stAlert {
-    background-color: rgba(200, 96, 10, 0.15) !important;
-    border-color: #C8600A !important;
+    background-color: rgba(245,166,35,0.15) !important;
+    border-color: #F5A623 !important;
 }
 
 /* ── Page headings ── */
 h1 {
-    color: #1A1A1A !important;
-    font-size: 1.85rem !important;
+    color: #1E3DA5 !important;
+    font-size: 1.75rem !important;
     font-weight: 700 !important;
-    padding-bottom: 0.45rem;
-    border-bottom: 3px solid #C41230;
+    letter-spacing: -0.01em;
     margin-bottom: 1.1rem !important;
+    border-bottom: none;
+    padding-bottom: 0;
 }
 h2 {
-    color: #1A1A1A !important;
-    font-size: 1.2rem !important;
+    color: #1E3DA5 !important;
+    font-size: 1.15rem !important;
     font-weight: 600 !important;
-    padding-bottom: 0.2rem;
-    border-bottom: 1px solid #DEDEDE;
+    border-bottom: none;
+    padding-bottom: 0;
     margin-top: 1.2rem !important;
-    margin-bottom: 0.7rem !important;
+    margin-bottom: 0.6rem !important;
 }
 h3 {
-    color: #1A1A1A !important;
-    font-size: 1rem !important;
+    color: #333333 !important;
+    font-size: 0.95rem !important;
     font-weight: 600 !important;
 }
 
 /* ── Metric cards ── */
 [data-testid="metric-container"] {
     background: #FFFFFF;
-    border: 1px solid #DEDEDE;
-    border-top: 3px solid #C41230;
-    border-radius: 4px;
+    border: 1px solid #E0E0E0;
+    border-top: 3px solid #1E3DA5;
+    border-radius: 2px;
     padding: 1rem 1.2rem !important;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 [data-testid="metric-container"] [data-testid="stMetricLabel"] {
-    font-size: 0.72rem !important;
+    font-size: 0.7rem !important;
     font-weight: 600 !important;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: #6B7280 !important;
+    letter-spacing: 0.07em;
+    color: #666666 !important;
 }
 [data-testid="metric-container"] [data-testid="stMetricValue"] {
-    font-size: 1.45rem !important;
+    font-size: 1.5rem !important;
     font-weight: 700 !important;
-    color: #1A1A1A !important;
+    color: #1E3DA5 !important;
 }
 
 /* ── Buttons ── */
 .stButton > button {
-    font-family: 'Source Sans 3', Arial, sans-serif !important;
+    font-family: 'Inter', Arial, sans-serif !important;
     font-weight: 600 !important;
     font-size: 0.875rem !important;
-    border-radius: 3px !important;
+    border-radius: 2px !important;
     transition: background 0.15s, color 0.15s;
 }
 .stButton > button[data-testid="baseButton-primary"],
 .stButton > button[kind="primary"] {
-    background-color: #C41230 !important;
+    background-color: #1E3DA5 !important;
     color: #FFFFFF !important;
     border: none !important;
 }
 .stButton > button[data-testid="baseButton-primary"]:hover,
 .stButton > button[kind="primary"]:hover {
-    background-color: #A50E28 !important;
+    background-color: #163180 !important;
 }
 .stButton > button[data-testid="baseButton-secondary"],
 .stButton > button[kind="secondary"] {
-    background-color: #1B2D3E !important;
-    color: #FFFFFF !important;
-    border: 1px solid #1B2D3E !important;
+    background-color: #FFFFFF !important;
+    color: #1E3DA5 !important;
+    border: 1.5px solid #1E3DA5 !important;
 }
 .stButton > button[data-testid="baseButton-secondary"]:hover,
 .stButton > button[kind="secondary"]:hover {
-    background-color: #253D52 !important;
+    background-color: #F0F4FF !important;
 }
 
 /* ── Download buttons ── */
 .stDownloadButton > button {
     background-color: transparent !important;
-    color: #C41230 !important;
-    border: 1px solid #C41230 !important;
+    color: #1E3DA5 !important;
+    border: 1.5px solid #1E3DA5 !important;
     font-weight: 600 !important;
-    border-radius: 3px !important;
+    border-radius: 2px !important;
 }
 .stDownloadButton > button:hover {
-    background-color: #C41230 !important;
+    background-color: #1E3DA5 !important;
     color: #FFFFFF !important;
 }
 
 /* ── DataFrames ── */
 [data-testid="stDataFrame"] thead tr th,
 [data-testid="stDataFrame"] th {
-    background-color: #1B2D3E !important;
+    background-color: #1E3DA5 !important;
     color: #FFFFFF !important;
     font-weight: 600 !important;
-    font-size: 0.78rem !important;
+    font-size: 0.75rem !important;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.06em;
 }
 [data-testid="stDataFrame"] tr:nth-child(even) td {
-    background-color: #F8F9FA !important;
+    background-color: #F5F7FA !important;
 }
 [data-testid="stDataFrame"] {
-    border: 1px solid #DEDEDE;
-    border-radius: 4px;
+    border: 1px solid #E0E0E0;
+    border-radius: 2px;
     overflow: hidden;
 }
 
 /* ── Expanders ── */
 [data-testid="stExpander"] {
-    border: 1px solid #DEDEDE !important;
-    border-radius: 4px !important;
+    border: 1px solid #E0E0E0 !important;
+    border-radius: 2px !important;
     background: #FFFFFF !important;
 }
 [data-testid="stExpander"] summary {
     font-weight: 600 !important;
-    color: #1B2D3E !important;
+    color: #1E3DA5 !important;
 }
 
 /* ── Inputs ── */
 [data-testid="stSelectbox"] > div > div,
 [data-testid="stTextInput"] > div > div > input {
-    border-color: #DEDEDE !important;
-    border-radius: 3px !important;
+    border-color: #E0E0E0 !important;
+    border-radius: 2px !important;
 }
 [data-testid="stSelectbox"] > div > div:focus-within,
 [data-testid="stTextInput"] > div > div:focus-within {
-    border-color: #C41230 !important;
-    box-shadow: 0 0 0 2px rgba(196,18,48,0.12) !important;
+    border-color: #1E3DA5 !important;
+    box-shadow: 0 0 0 2px rgba(30,61,165,0.12) !important;
 }
 
 /* ── Progress bar ── */
 .stProgress > div > div > div > div {
-    background-color: #C41230 !important;
+    background-color: #1E3DA5 !important;
 }
 
 /* ── Alert boxes ── */
 div[data-testid="stInfo"] {
-    background-color: rgba(27, 45, 62, 0.07) !important;
-    border-left-color: #1B2D3E !important;
+    background-color: rgba(30,61,165,0.05) !important;
+    border-left-color: #1E3DA5 !important;
 }
 div[data-testid="stSuccess"] {
-    background-color: rgba(0, 122, 61, 0.07) !important;
-    border-left-color: #007A3D !important;
+    background-color: rgba(0,168,120,0.07) !important;
+    border-left-color: #00A878 !important;
 }
 div[data-testid="stWarning"] {
-    background-color: rgba(200, 96, 10, 0.09) !important;
-    border-left-color: #C8600A !important;
+    background-color: rgba(245,166,35,0.08) !important;
+    border-left-color: #F5A623 !important;
 }
 div[data-testid="stError"] {
-    background-color: rgba(196, 18, 48, 0.07) !important;
-    border-left-color: #C41230 !important;
+    background-color: rgba(217,48,37,0.07) !important;
+    border-left-color: #D93025 !important;
 }
 
 /* ── Divider ── */
-hr { border-color: #DEDEDE !important; margin: 1.4rem 0 !important; }
+hr { border-color: #E0E0E0 !important; margin: 1.4rem 0 !important; }
 
 /* ── Spinner ── */
-.stSpinner > div { border-top-color: #C41230 !important; }
+.stSpinner > div { border-top-color: #1E3DA5 !important; }
 
 /* ── Tabs ── */
-.stTabs [data-baseweb="tab"] { font-weight: 600 !important; color: #6B7280 !important; }
-.stTabs [aria-selected="true"] { color: #C41230 !important; border-bottom-color: #C41230 !important; }
+.stTabs [data-baseweb="tab"] { font-weight: 500 !important; color: #666666 !important; }
+.stTabs [aria-selected="true"] { color: #1E3DA5 !important; border-bottom-color: #1E3DA5 !important; font-weight: 600 !important; }
 
 /* ── Caption / muted text ── */
-[data-testid="stCaptionContainer"], .stCaption { color: #6B7280 !important; font-size: 0.8rem !important; }
+[data-testid="stCaptionContainer"], .stCaption { color: #666666 !important; font-size: 0.8rem !important; }
 </style>
 """, unsafe_allow_html=True)
 
-# S&P-aligned Plotly palette (used across all charts)
-_SPX_COLORS = ["#C41230", "#1B2D3E", "#007A3D", "#C8600A", "#4A90D9", "#6B7280", "#8E44AD"]
+# Prosus brand Plotly palette
+_SPX_COLORS = ["#1E3DA5", "#F5A623", "#00A878", "#D93025", "#4A6FCC", "#163180", "#7A9ED8"]
 
 def _spx_layout(**kwargs) -> dict:
-    """Base Plotly layout using S&P Global design tokens."""
+    """Base Plotly layout using Prosus design tokens."""
     base = dict(
-        font=dict(family="Source Sans 3, Helvetica Neue, Arial, sans-serif", color="#1A1A1A", size=12),
+        font=dict(family="Inter, Helvetica Neue, Arial, sans-serif", color="#333333", size=12),
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
         colorway=_SPX_COLORS,
         margin=dict(t=30, b=40, l=20, r=20),
         legend=dict(font=dict(size=11)),
-        xaxis=dict(gridcolor="#EBEBEB", linecolor="#DEDEDE", zerolinecolor="#DEDEDE"),
-        yaxis=dict(gridcolor="#EBEBEB", linecolor="#DEDEDE", zerolinecolor="#DEDEDE"),
+        xaxis=dict(gridcolor="#EEEEEE", linecolor="#E0E0E0", zerolinecolor="#E0E0E0"),
+        yaxis=dict(gridcolor="#EEEEEE", linecolor="#E0E0E0", zerolinecolor="#E0E0E0"),
     )
     base.update(kwargs)
     return base
@@ -340,9 +342,9 @@ def run_step(label: str, fn):
     with st.spinner(f"Running: {label}..."):
         try:
             fn()
-            st.success(f"✓ {label} complete")
+            st.success(f"{label} complete")
         except Exception as exc:
-            st.error(f"✗ {label} failed: {exc}")
+            st.error(f"{label} failed: {exc}")
     st.session_state["refresh_flag"] = True
     st.cache_data.clear()
 
@@ -366,8 +368,8 @@ def page_overview():
     st.markdown(f"""
 <div style="
     background: #FFFFFF;
-    border: 1px solid #DEDEDE;
-    border-left: 5px solid #C41230;
+    border: 1px solid #E0E0E0;
+    border-left: 5px solid #1E3DA5;
     border-radius: 4px;
     padding: 2rem 2.4rem 1.8rem 2.4rem;
     margin-bottom: 1.6rem;
@@ -378,24 +380,24 @@ def page_overview():
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.12em;
-      color: #C41230;
+      color: #1E3DA5;
       margin: 0 0 0.4rem 0;
   ">Investment Strategy Overview</p>
 
   <h2 style="
       font-size: 1.6rem;
       font-weight: 700;
-      color: #1A1A1A;
+      color: #333333;
       margin: 0 0 0.2rem 0;
       border: none;
       padding: 0;
   ">Shepherd Capital</h2>
 
-  <p style="font-size: 1rem; color: #6B7280; margin: 0 0 1.4rem 0; font-style: italic;">
+  <p style="font-size: 1rem; color: #666666; margin: 0 0 1.4rem 0; font-style: italic;">
       Systematic conviction investing — curated ideas, fundamental discipline
   </p>
 
-  <p style="font-size: 0.97rem; color: #1A1A1A; line-height: 1.7; margin: 0 0 1.2rem 0;">
+  <p style="font-size: 0.97rem; color: #333333; line-height: 1.7; margin: 0 0 1.2rem 0;">
       Shepherd Capital is a research-driven equity strategy that identifies companies with
       durable competitive advantages trading at a discount to intrinsic value, or positioned
       for a fundamental re-rating as near-term headwinds resolve. The strategy draws on
@@ -407,51 +409,51 @@ def page_overview():
   <div style="display: flex; gap: 2.5rem; flex-wrap: wrap; margin-bottom: 1.4rem;">
     <div>
       <p style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
-                letter-spacing: 0.08em; color: #6B7280; margin: 0 0 0.25rem 0;">
+                letter-spacing: 0.08em; color: #666666; margin: 0 0 0.25rem 0;">
           Investment Universe
       </p>
-      <p style="font-size: 0.95rem; color: #1A1A1A; margin: 0;">
+      <p style="font-size: 0.95rem; color: #333333; margin: 0;">
           Global listed equities, tilted toward mid- and large-cap
       </p>
     </div>
     <div>
       <p style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
-                letter-spacing: 0.08em; color: #6B7280; margin: 0 0 0.25rem 0;">
+                letter-spacing: 0.08em; color: #666666; margin: 0 0 0.25rem 0;">
           Portfolio Construction
       </p>
-      <p style="font-size: 0.95rem; color: #1A1A1A; margin: 0;">
+      <p style="font-size: 0.95rem; color: #333333; margin: 0;">
           Equal-weighted, monthly rebalanced, benchmarked vs SPY · QQQ · URTH
       </p>
     </div>
     <div>
       <p style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
-                letter-spacing: 0.08em; color: #6B7280; margin: 0 0 0.25rem 0;">
+                letter-spacing: 0.08em; color: #666666; margin: 0 0 0.25rem 0;">
           Idea Sourcing
       </p>
-      <p style="font-size: 0.95rem; color: #1A1A1A; margin: 0;">
+      <p style="font-size: 0.95rem; color: #333333; margin: 0;">
           Proprietary research pipeline — AI-extracted from published articles & deep-dives
       </p>
     </div>
     <div>
       <p style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
-                letter-spacing: 0.08em; color: #6B7280; margin: 0 0 0.25rem 0;">
+                letter-spacing: 0.08em; color: #666666; margin: 0 0 0.25rem 0;">
           Valuation Overlay
       </p>
-      <p style="font-size: 0.95rem; color: #1A1A1A; margin: 0;">
+      <p style="font-size: 0.95rem; color: #333333; margin: 0;">
           DCF (FCFF) · Residual Income · Total Payout — consensus fair value per holding
       </p>
     </div>
   </div>
 
-  <hr style="border: none; border-top: 1px solid #EBEBEB; margin: 1rem 0;" />
+  <hr style="border: none; border-top: 1px solid #E0E0E0; margin: 1rem 0;" />
 
   <div style="display: flex; gap: 3rem; flex-wrap: wrap;">
     <div>
       <p style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
-                letter-spacing: 0.08em; color: #6B7280; margin: 0 0 0.3rem 0;">
+                letter-spacing: 0.08em; color: #666666; margin: 0 0 0.3rem 0;">
           Core Thesis
       </p>
-      <p style="font-size: 0.88rem; color: #1A1A1A; line-height: 1.65; margin: 0; max-width: 420px;">
+      <p style="font-size: 0.88rem; color: #333333; line-height: 1.65; margin: 0; max-width: 420px;">
           Markets systematically misprice companies undergoing operational transitions,
           sector rotations, or short-term earnings pressure. Shepherd Capital targets
           this gap — owning quality businesses when sentiment is weakest and the
@@ -460,10 +462,10 @@ def page_overview():
     </div>
     <div>
       <p style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
-                letter-spacing: 0.08em; color: #6B7280; margin: 0 0 0.3rem 0;">
+                letter-spacing: 0.08em; color: #666666; margin: 0 0 0.3rem 0;">
           Risk Management
       </p>
-      <p style="font-size: 0.88rem; color: #1A1A1A; line-height: 1.65; margin: 0; max-width: 380px;">
+      <p style="font-size: 0.88rem; color: #333333; line-height: 1.65; margin: 0; max-width: 380px;">
           Position sizing is equal-weighted to prevent concentration risk. Stale
           recommendations (18+ months without reaffirmation) are automatically flagged
           for review. Hard valuation stops are enforced where the fair-value consensus
@@ -472,16 +474,16 @@ def page_overview():
     </div>
   </div>
 
-  <hr style="border: none; border-top: 1px solid #EBEBEB; margin: 1rem 0;" />
+  <hr style="border: none; border-top: 1px solid #E0E0E0; margin: 1rem 0;" />
 
   <div style="display: flex; align-items: center; gap: 1.6rem; flex-wrap: wrap;">
     <p style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
-              letter-spacing: 0.08em; color: #6B7280; margin: 0;">
+              letter-spacing: 0.08em; color: #666666; margin: 0;">
         Research
     </p>
 <a href="{_sub_url}" target="_blank" style="
-        font-size: 0.88rem; font-weight: 600; color: #C41230;
-        text-decoration: none; border-bottom: 1px solid rgba(196,18,48,0.3);
+        font-size: 0.88rem; font-weight: 600; color: #1E3DA5;
+        text-decoration: none; border-bottom: 1px solid rgba(30,61,165,0.3);
         padding-bottom: 1px; transition: border-color 0.15s;">
         Substack Newsletter ↗
     </a>
@@ -572,12 +574,12 @@ def page_fund_performance():
 
     fig.add_trace(go.Scatter(
         x=perf["date"], y=perf["fund_value"],
-        name="Shepherd Capital Fund", line=dict(color="#C41230", width=2.5)
+        name="Shepherd Capital Fund", line=dict(color="#1E3DA5", width=2.5)
     ))
     for col, name, color in [
-        ("benchmark_spy", "SPY", "#1B2D3E"),
-        ("benchmark_qqq", "QQQ", "#007A3D"),
-        ("benchmark_world", "URTH", "#C8600A"),
+        ("benchmark_spy", "SPY", "#F5A623"),
+        ("benchmark_qqq", "QQQ", "#00A878"),
+        ("benchmark_world", "URTH", "#666666"),
     ]:
         if col in perf.columns and perf[col].notna().any():
             fig.add_trace(go.Scatter(
@@ -600,7 +602,7 @@ def page_fund_performance():
     st.subheader("Drawdown")
     perf["rolling_max"] = perf["fund_value"].cummax()
     perf["drawdown"] = (perf["fund_value"] - perf["rolling_max"]) / perf["rolling_max"] * 100
-    fig_dd = px.area(perf, x="date", y="drawdown", color_discrete_sequence=["#C41230"])
+    fig_dd = px.area(perf, x="date", y="drawdown", color_discrete_sequence=["#D93025"])
     fig_dd.update_layout(**_spx_layout(yaxis_title="Drawdown (%)", height=250))
     st.plotly_chart(fig_dd, use_container_width=True)
 
@@ -851,39 +853,39 @@ def page_refresh():
     col1, col2 = st.columns(2)
 
     with col1:
-        if st.button("🔄 Scrape New Content", use_container_width=True):
+        if st.button("Scrape New Content", use_container_width=True):
             run_step("Scrape", lambda: (
                 __import__("src.scrape_substack", fromlist=["scrape_substack"]).scrape_substack(),
                 __import__("src.scrape_website", fromlist=["scrape_website"]).scrape_website(),
             ))
 
-        if st.button("🧠 Extract Recommendations", use_container_width=True):
+        if st.button("Extract Recommendations", use_container_width=True):
             run_step("Extract", lambda: __import__("src.extract_recommendations", fromlist=["extract_all"]).extract_all())
 
-        if st.button("🏷️ Resolve Tickers", use_container_width=True):
+        if st.button("Resolve Tickers", use_container_width=True):
             run_step("Resolve Tickers", lambda: (
                 __import__("src.ticker_resolver", fromlist=["resolve_tickers"]).resolve_tickers(),
                 __import__("src.ticker_resolver", fromlist=["enrich_recommendations_with_tickers"]).enrich_recommendations_with_tickers(),
             ))
 
     with col2:
-        if st.button("💰 Refresh Prices", use_container_width=True):
+        if st.button("Refresh Prices", use_container_width=True):
             run_step("Refresh Prices", lambda: __import__("src.price_fetcher", fromlist=["refresh_all_tracked_prices"]).refresh_all_tracked_prices())
 
-        if st.button("📊 Rebuild Portfolio", use_container_width=True):
+        if st.button("Rebuild Portfolio", use_container_width=True):
             run_step("Build Portfolio", lambda: (
                 __import__("src.portfolio_builder", fromlist=["build_portfolio"]).build_portfolio(),
                 __import__("src.portfolio_builder", fromlist=["build_performance_history"]).build_performance_history(),
             ))
 
-        if st.button("📁 Export Excel", use_container_width=True):
+        if st.button("Export Excel", use_container_width=True):
             run_step("Export Excel", lambda: __import__("src.export_excel", fromlist=["export_excel"]).export_excel())
             exports_dir = get_config_value("output", "exports_dir", default="data/exports")
             st.info(f"Excel saved to: {exports_dir}/")
 
     st.markdown("---")
     st.subheader("Run Full Pipeline")
-    if st.button("🚀 Run All Steps", type="primary", use_container_width=True):
+    if st.button("Run All Steps", type="primary", use_container_width=True):
         steps = [
             ("Scrape", lambda: (
                 __import__("src.scrape_substack", fromlist=["scrape_substack"]).scrape_substack(),
@@ -929,8 +931,8 @@ def page_refresh():
 # Fair Value Analysis
 # ---------------------------------------------------------------------------
 
-_RATING_COLOUR = {"BUY": "🟢", "HOLD": "🟡", "SELL": "🔴", "N/A": "⚪"}
-_CONFIDENCE_COLOUR = {"high": "🔵", "medium": "🟠", "low": "🔴"}
+_RATING_COLOUR = {"BUY": "", "HOLD": "", "SELL": "", "N/A": ""}
+_CONFIDENCE_COLOUR = {"high": "", "medium": "", "low": ""}
 
 
 def _run_single_valuation(ticker: str):
@@ -1087,10 +1089,10 @@ def page_fair_value():
     disp = df[[c for c in display_cols if c in df.columns]].copy()
 
     def rating_icon(r):
-        return f"{_RATING_COLOUR.get(r, '⚪')} {r}"
+        return str(r)
 
     def conf_icon(c):
-        return f"{_CONFIDENCE_COLOUR.get(c, '⚪')} {c}"
+        return str(c)
 
     if "rating" in disp.columns:
         disp["rating"] = disp["rating"].apply(rating_icon)
@@ -1123,7 +1125,7 @@ def page_fair_value():
         st.subheader("Upside / Downside to Fair Value")
         chart_df = valued_df.sort_values("upside_pct", ascending=True).head(40)
         colours = chart_df["upside_pct"].apply(
-            lambda x: "#007A3D" if x > 0 else "#C41230"
+            lambda x: "#00A878" if x > 0 else "#D93025"
         ).tolist()
         fig = go.Figure(go.Bar(
             x=chart_df["upside_pct"],
@@ -1137,8 +1139,8 @@ def page_fair_value():
             **_spx_layout(
                 height=max(400, len(chart_df) * 22),
                 xaxis_title="Upside to Fair Value (%)",
-                xaxis=dict(zeroline=True, zerolinewidth=2, zerolinecolor="#DEDEDE",
-                           gridcolor="#EBEBEB"),
+                xaxis=dict(zeroline=True, zerolinewidth=2, zerolinecolor="#E0E0E0",
+                           gridcolor="#EEEEEE"),
                 margin=dict(l=20, r=60, t=20, b=40),
             )
         )
@@ -1176,8 +1178,7 @@ def page_fair_value():
                     st.metric("Fair Value (Mid)", f"${v.fair_value_mid:.2f}",
                               delta=f"{v.upside_downside_pct:+.1%} upside")
                     st.caption(f"Range: ${v.fair_value_low:.2f} – ${v.fair_value_high:.2f}")
-                    st.markdown(f"**{_RATING_COLOUR.get(rating_map.get(v.label,'N/A'),'⚪')} "
-                                f"{rating_map.get(v.label, 'N/A')}**")
+                    st.markdown(f"**{rating_map.get(v.label, 'N/A')}**")
                     st.caption(v.rationale)
 
             # Model details
