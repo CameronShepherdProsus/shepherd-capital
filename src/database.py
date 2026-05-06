@@ -166,7 +166,7 @@ def get_session() -> Session:
 
 def init_db() -> None:
     """Create all tables (safe to call multiple times)."""
-    Base.metadata.create_all(get_engine())
+    Base.metadata.create_all(get_engine(), checkfirst=True)
 
     # Add unique index on prices(ticker, date) if not present
     engine = get_engine()
